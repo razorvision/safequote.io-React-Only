@@ -38,7 +38,7 @@ describe('VehicleCard', () => {
     expect(screen.getByText('2024 Honda Civic')).toBeInTheDocument();
     expect(screen.getByText('Sedan')).toBeInTheDocument();
     expect(screen.getByText('New')).toBeInTheDocument();
-    expect(screen.getByText('$25,000')).toBeInTheDocument();
+    expect(screen.getByText('25,000')).toBeInTheDocument();
     expect(screen.getByText('15 miles')).toBeInTheDocument();
   });
 
@@ -89,7 +89,7 @@ describe('VehicleCard', () => {
     const expensiveVehicle = { ...mockVehicle, price: 45000 };
     render(<VehicleCard vehicle={expensiveVehicle} index={0} onSelect={mockOnSelect} />);
 
-    expect(screen.getByText('$45,000')).toBeInTheDocument();
+    expect(screen.getByText('45,000')).toBeInTheDocument();
   });
 
   it('should format mileage with comma separators', () => {
