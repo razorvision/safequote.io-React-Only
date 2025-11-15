@@ -76,15 +76,22 @@ export async function fetchModelsForMakeYear(make, year) {
       throw new Error('Invalid response format from NHTSA API');
     }
 
-    // Map and sort models alphabetically
-    const models = data.Results
-      .map(model => ({
-        id: model.Model_ID,
-        name: model.Model_Name
-      }))
+    // Map, deduplicate by name, and sort models alphabetically
+    const uniqueModels = new Map();
+    data.Results.forEach(model => {
+      // Keep the first occurrence of each unique model name
+      if (!uniqueModels.has(model.Model_Name)) {
+        uniqueModels.set(model.Model_Name, {
+          id: model.Model_ID,
+          name: model.Model_Name
+        });
+      }
+    });
+
+    const models = Array.from(uniqueModels.values())
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    console.log(`Loaded ${models.length} models for ${make} ${year}`);
+    console.log(`Loaded ${models.length} unique models for ${make} ${year}`);
     return models;
   } catch (error) {
     console.error(`Error fetching models for ${make} ${year}:`, error);
