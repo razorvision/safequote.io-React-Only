@@ -6,35 +6,51 @@
 const VPIC_BASE_URL = 'https://vpic.nhtsa.dot.gov/api/vehicles';
 
 /**
- * Fetch all vehicle makes from NHTSA vPIC API
- * @returns {Promise<Array<{id: number, name: string}>>} Array of vehicle makes
+ * Popular US vehicle makes (curated list for performance)
+ * Includes most common manufacturers that parents would shop for
  */
-export async function fetchAllMakes() {
-  try {
-    const response = await fetch(`${VPIC_BASE_URL}/GetAllMakes?format=json`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+const POPULAR_US_MAKES = [
+  'Acura',
+  'Audi',
+  'BMW',
+  'Buick',
+  'Cadillac',
+  'Chevrolet',
+  'Chrysler',
+  'Dodge',
+  'Ford',
+  'Genesis',
+  'GMC',
+  'Honda',
+  'Hyundai',
+  'Infiniti',
+  'Jeep',
+  'Kia',
+  'Lexus',
+  'Lincoln',
+  'Mazda',
+  'Mercedes-Benz',
+  'Mitsubishi',
+  'Nissan',
+  'Ram',
+  'Subaru',
+  'Tesla',
+  'Toyota',
+  'Volkswagen',
+  'Volvo'
+];
 
-    if (!data.Results || !Array.isArray(data.Results)) {
-      throw new Error('Invalid response format from NHTSA API');
-    }
-
-    // Map and sort makes alphabetically
-    const makes = data.Results
-      .map(make => ({
-        id: make.Make_ID,
-        name: make.Make_Name
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-
-    console.log(`Loaded ${makes.length} vehicle makes`);
-    return makes;
-  } catch (error) {
-    console.error('Error fetching makes:', error);
-    throw error;
-  }
+/**
+ * Get popular vehicle makes (instant, no API call needed)
+ * @returns {Array<{id: number, name: string}>} Array of popular vehicle makes
+ */
+export function getPopularMakes() {
+  const makes = POPULAR_US_MAKES.map((name, index) => ({
+    id: index,
+    name: name
+  }));
+  console.log(`Loaded ${makes.length} popular vehicle makes`);
+  return makes;
 }
 
 /**

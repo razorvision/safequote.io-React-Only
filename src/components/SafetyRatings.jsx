@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Star, AlertTriangle, Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { fetchAllMakes, fetchModelsForMakeYear, generateYearRange } from '@/lib/nhtsaVehicleApi';
+import { getPopularMakes, fetchModelsForMakeYear, generateYearRange } from '@/lib/nhtsaVehicleApi';
 
 const SafetyRatings = () => {
   const [make, setMake] = useState('');
@@ -15,24 +15,13 @@ const SafetyRatings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
-  const [isLoadingMakes, setIsLoadingMakes] = useState(false);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
   const [years] = useState(generateYearRange());
 
-  // Fetch all makes on component mount
+  // Load popular makes on component mount (instant, no API call)
   useEffect(() => {
-    const loadMakes = async () => {
-      setIsLoadingMakes(true);
-      try {
-        const makesData = await fetchAllMakes();
-        setMakes(makesData);
-      } catch (err) {
-        console.error('Failed to load makes:', err);
-      } finally {
-        setIsLoadingMakes(false);
-      }
-    };
-    loadMakes();
+    const makesData = getPopularMakes();
+    setMakes(makesData);
   }, []);
 
   // Fetch models when year or make changes
@@ -163,9 +152,9 @@ const SafetyRatings = () => {
           </div>
           <div className="md:col-span-1">
             <label htmlFor="make" className="block text-sm font-medium text-gray-700 mb-1">Make</label>
-            <Select value={make} onValueChange={setMake} disabled={isLoadingMakes}>
+            <Select value={make} onValueChange={setMake}>
               <SelectTrigger id="make" className="w-full">
-                <SelectValue placeholder={isLoadingMakes ? "Loading makes..." : "Select make"} />
+                <SelectValue placeholder="Select make" />
               </SelectTrigger>
               <SelectContent className="max-h-[300px]">
                 {makes.map((m) => (
