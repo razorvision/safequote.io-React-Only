@@ -1,17 +1,62 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Star, AlertTriangle, Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { fetchAllMakes, fetchModelsForMakeYear, generateYearRange } from '@/lib/nhtsaVehicleApi';
 
 const SafetyRatings = () => {
-  const [make, setMake] = useState('Toyota');
-  const [model, setModel] = useState('Camry');
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
   const [year, setYear] = useState('2024');
   const [ratings, setRatings] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]);
+  const [isLoadingMakes, setIsLoadingMakes] = useState(false);
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+  const [years] = useState(generateYearRange());
+
+  // Fetch all makes on component mount
+  useEffect(() => {
+    const loadMakes = async () => {
+      setIsLoadingMakes(true);
+      try {
+        const makesData = await fetchAllMakes();
+        setMakes(makesData);
+      } catch (err) {
+        console.error('Failed to load makes:', err);
+      } finally {
+        setIsLoadingMakes(false);
+      }
+    };
+    loadMakes();
+  }, []);
+
+  // Fetch models when year or make changes
+  useEffect(() => {
+    if (make && year) {
+      const loadModels = async () => {
+        setIsLoadingModels(true);
+        setModel(''); // Reset model when make/year changes
+        try {
+          const modelsData = await fetchModelsForMakeYear(make, year);
+          setModels(modelsData);
+        } catch (err) {
+          console.error('Failed to load models:', err);
+          setModels([]);
+        } finally {
+          setIsLoadingModels(false);
+        }
+      };
+      loadModels();
+    } else {
+      setModels([]);
+      setModel('');
+    }
+  }, [make, year]);
 
   const fetchRatings = async (e) => {
     e.preventDefault();
@@ -103,15 +148,48 @@ const SafetyRatings = () => {
         <form onSubmit={fetchRatings} className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-8">
           <div className="md:col-span-1">
             <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-            <Input id="year" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g., 2024" required />
+            <Select value={year} onValueChange={setYear} required>
+              <SelectTrigger id="year">
+                <SelectValue placeholder="Select year" />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map((y) => (
+                  <SelectItem key={y} value={y.toString()}>
+                    {y}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="md:col-span-1">
             <label htmlFor="make" className="block text-sm font-medium text-gray-700 mb-1">Make</label>
-            <Input id="make" value={make} onChange={(e) => setMake(e.target.value)} placeholder="e.g., Toyota" required />
+            <Select value={make} onValueChange={setMake} required disabled={isLoadingMakes}>
+              <SelectTrigger id="make">
+                <SelectValue placeholder={isLoadingMakes ? "Loading makes..." : "Select make"} />
+              </SelectTrigger>
+              <SelectContent>
+                {makes.map((m) => (
+                  <SelectItem key={m.id} value={m.name}>
+                    {m.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="md:col-span-1">
             <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-1">Model</label>
-            <Input id="model" value={model} onChange={(e) => setModel(e.target.value)} placeholder="e.g., Camry" required />
+            <Select value={model} onValueChange={setModel} required disabled={isLoadingModels || !make}>
+              <SelectTrigger id="model">
+                <SelectValue placeholder={isLoadingModels ? "Loading models..." : !make ? "Select make first" : "Select model"} />
+              </SelectTrigger>
+              <SelectContent>
+                {models.map((m) => (
+                  <SelectItem key={m.id} value={m.name}>
+                    {m.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <Button type="submit" className="w-full md:col-span-1" disabled={isLoading}>
             {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Search className="w-5 h-5 mr-2" /> Check Rating</>}
