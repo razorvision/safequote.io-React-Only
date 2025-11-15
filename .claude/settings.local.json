@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(cat:*)",
+      "Bash(bash:*)",
+      "Bash(gh:*)",
+      "Bash(for:*)",
+      "Bash(do gh project item-add:*)",
+      "Bash(done)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install)",
+      "Bash(git checkout:*)",
+      "Bash(npx playwright:*)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Update hero cover image with parent and teenager\n\n- Replace stock car image with AI-generated image showing parent and teenager with car\n- Image now properly represents the target audience (parents of teen drivers)\n- Added hero-image.jpg to public folder for optimized loading\n- Updated alt text for better accessibility\n\nCloses #4\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
