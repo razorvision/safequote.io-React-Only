@@ -427,6 +427,28 @@ const SafetyRatings = () => {
                   </div>
                 </div>
               )}
+
+              {/* Insurance Quote CTA */}
+              <div className="mt-10 pt-8 border-t-2 border-gray-200">
+                <div className="text-center bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl p-8 shadow-lg">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                    Protect Your {ratings.ModelYear} {ratings.Make} {ratings.Model}
+                  </h3>
+                  <p className="text-white/90 text-lg mb-6 max-w-2xl mx-auto">
+                    Now that you know it's safe, get the best insurance rates tailored to your vehicle's excellent safety features.
+                  </p>
+                  <Button
+                    size="lg"
+                    className="bg-white text-blue-700 hover:bg-gray-50 font-bold text-lg px-8 py-6 h-auto shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                    onClick={() => window.location.href = '/?flow=compareInsurance'}
+                  >
+                    Get Your Insurance Quote →
+                  </Button>
+                  <p className="text-white/80 text-sm mt-4">
+                    Compare rates from top providers • Free quotes • No obligation
+                  </p>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
