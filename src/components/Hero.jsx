@@ -12,9 +12,9 @@ const Hero = () => {
     <section className="relative text-white py-20 md:py-32 overflow-hidden">
       <div className="absolute inset-0">
         <img
-          alt="Parent handing car keys to a happy teenager"
+          alt="Parent and teenager with car keys"
           className="w-full h-full object-cover"
-          src="https://images.unsplash.com/photo-1674559884947-a778697b6101" />
+          src="/hero-image.jpg" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-transparent"></div>
       </div>
